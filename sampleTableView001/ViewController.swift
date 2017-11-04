@@ -7,12 +7,17 @@
 //
 
 import UIKit
+//var vc_teaList = ["★ダージリン★","★アールグレイ★","★アッサム★","★オレンジペコ★"]
 
 //1.プロトコルの設定（DataSource,Delegate）
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     @IBOutlet weak var myTableView: UITableView!
     
-    var teaList = ["ダージリン","アールグレイ","アッサム","オレンジペコ"]
+//    var teaList = ["ダージリン","アールグレイ","アッサム","オレンジペコ"]
+    
+    //何行目が選択されたか保存する変数
+    //-1は何も行番号が保存されていないという目印
+    var selectedIndex = -1
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +30,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 //        myTableView.delegate   = self
         
         //5.tableViewにCellオブジェクトを追加してidentifierにつけた名前と同じ名前を付ける
+        
+        print("1枚目が表示されたよ")
     }
 
    
@@ -41,7 +48,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 //            retValue = 10
 //        }
         
-        return teaList.count
+        return vc_teaList.count
         
     }
     
@@ -54,7 +61,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     //3.リストに表示する文字列を決定し、表示
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         //文字列を表示するせるの取得（セルの再利用）
-        //indexPath 行番号とかいろいろ入っている　セルを指定する時によく使う
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cellko", for: indexPath)
         
 
@@ -62,7 +68,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         case 0:
             //表示したい文字の設定
 //            cell.textLabel?.text = "セクション０　\(indexPath.row)行目"
-            cell.textLabel?.text = teaList[indexPath.row]
+            cell.textLabel?.text = vc_teaList[indexPath.row]
             cell.textLabel?.textColor = UIColor.brown
             
         case 1:
@@ -79,7 +85,30 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         return cell
     }
     
+    // セルをタップしたら発動
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("\(indexPath.row)行目がタップされました")
+        
+        //選択された行番号を保存
+        selectedIndex = indexPath.row
+        
+        //セグエの名前を指定して、画面遷移処理を発動
+        performSegue(withIdentifier: "showDetail", sender: nil)
+        tableView.separatorColor = UIColor.red
+
+    }
     
+    // セグエを使って、画面遷移している時は発動
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // 次の画面のインスタンス(オブジェクト）を取得
+        var dvc:DetailViewController = segue.destination as! DetailViewController
+        
+        //次の画面のプロパティ（メンバ変数）passedIndexに選択された行番号を渡す
+        dvc.passedIndex = selectedIndex
+        print(selectedIndex)
+
+    }
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

@@ -28,7 +28,7 @@ class DetailViewController: UIViewController {
         myImageView.image = UIImage(named: teaImage[passedIndex] )
         myTextView.text = teaExplainList[passedIndex]
 
-        //ナニコレ？
+        //ナニコレ？ アニメーションの動作する秒数の設定
         myImageView.animationDuration = 1.0
 
 
